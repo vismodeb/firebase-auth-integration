@@ -1,16 +1,33 @@
+import { useContext } from "react";
 import { Link, Navigate, NavLink } from "react-router-dom";
+import { AuthContext } from "./Providers/AuthProvider";
+import { RiLogoutCircleLine } from "react-icons/ri";
 
 const Header = () => {
+  const { user, signOutUser } = useContext(AuthContext);
+  console.log(user);
+
+  const handleSignOut = () => {
+    signOutUser()
+      .then(() => {
+        console.log("user sign out successfully");
+      })
+      .catch((error) => console.log("ERROR", error.message));
+  };
+
   const links = (
     <>
       <li>
         <NavLink to="/">Home</NavLink>
       </li>
       <li>
-        <NavLink to="/login">Login</NavLink>
+        <NavLink to="/">Blog</NavLink>
       </li>
       <li>
-        <NavLink to="/register">Register</NavLink>
+        <NavLink to="/">Service</NavLink>
+      </li>
+      <li>
+        <NavLink to="/">Contact</NavLink>
       </li>
     </>
   );
@@ -54,7 +71,30 @@ const Header = () => {
           <ul className="menu menu-horizontal px-1">{links}</ul>
         </div>
         <div className="navbar-end">
-          <a className="btn">Button</a>
+          {user ? (
+            <>
+              <span>{user.email}</span>
+              <a
+                onClick={handleSignOut}
+                className="flex items-center justify-center text-red-700 bg-slate-200 border-2 p-1.5 rounded-full"
+              >
+                <RiLogoutCircleLine size={18} />
+              </a>
+            </>
+          ) : (
+            <ul className="flex items-center text-center gap-2 font-semibold">
+              <Link to="/login">
+                <li className="w-20 px-2 py-1.5 bg-yellow-400 hover:bg-yellow-500 duration-300 rounded-box shadow">
+                  Login
+                </li>
+              </Link>
+              <Link to="/register">
+                <li className="w-24 px-2 py-1.5 text-white bg-blue-600 hover:bg-blue-700 duration-300 rounded-box shadow">
+                  Register
+                </li>
+              </Link>
+            </ul>
+          )}
         </div>
       </div>
     </div>
